@@ -1,0 +1,23 @@
+{% extends 'emails/base.html.twig' %}
+
+{% block title %}Nouvelle feuille d'heures{% endblock %}
+
+{% block body %}
+    
+    <div id="main" class="">
+        <p>Bonjour,</p>
+
+        <p>
+            Vous trouverez ci-joint la feuille d'heures hebdomadaire de <strong>{{ weeksheet.user.lastname | upper }} {{ weeksheet.user.firstname | capitalize }}</strong>,
+            pour la semaine <strong>n° {{ weeksheet.beginAt | format_date(pattern="w") }}.</strong>
+        </p>
+        <p>
+            Période du {{ weeksheet.beginAt | format_date(pattern="eeee d") }} au {{ weeksheet.finishAt | format_date(pattern="eeee d MMMM yyyy") }}
+        </p>
+
+        <a href="{{ url('schedules_show', {id: weeksheet.id}) }}">Consulter en ligne</a>
+
+        <p>Bonne réception.</p>
+    </div>
+
+{% endblock %}

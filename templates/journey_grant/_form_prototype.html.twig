@@ -1,0 +1,27 @@
+<div class="row align-items-end border-top border-secondary my-2 item">
+    <div class="col-6 col-md-4 col-lg-2 px-1 my-2 align-items-end">
+        {{ form_label(journeygrant.createdAt) }}
+        {{ form_widget(journeygrant.createdAt) }}
+    </div>
+    <div class="col-6 col-md-8 col-lg-2 px-1 my-2 align-items-end">
+        {{ form_label(journeygrant.manager) }}
+        {{ form_widget(journeygrant.manager) }}
+    </div>
+    <div class="col-6 col-lg-2 px-1 my-2 align-items-end position-relative">
+        {{ form_label(journeygrant.client) }}
+        {{ form_widget(journeygrant.client) }}
+        <ul class="list-group position-absolute client_suggests"></ul>
+    </div>
+    <div class="col-6 col-lg-2 px-1 my-2 align-items-end">
+        {{ form_label(journeygrant.city) }}
+        {{ form_widget(journeygrant.city) }}
+    </div>
+    <div class="col-4 col-lg-2 px-1 my-2 align-items-end">
+        {{ form_label(journeygrant.distance) }}
+        {{ form_widget(journeygrant.distance) }}
+    </div>
+    <div class="col-4 col-lg-1 px-1 my-2 align-items-end">
+        {{ form_label(journeygrant.sector) }}
+        {{ form_widget(journeygrant.sector) }}
+    </div>
+</div>   

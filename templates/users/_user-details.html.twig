@@ -1,0 +1,35 @@
+<table class="table bg-white">
+    <tbody>
+        <tr>
+            <th scope="row">Nom Prénom :</th>
+            <td>{{ user.lastname | capitalize }} {{ user.firstname | capitalize }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Email :</th>
+            <td>{{ user.email }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Service :</th>
+            <td>{% if user.department is not null %}{{ user.department.fullname }}{% endif %}</td>
+        </tr>
+        {% if is_granted('ROLE_ADMIN') %}
+            <tr>
+                <th scope="row">Statut :</th>
+                {% if user.isActive %}
+                    <td class="text-success">Actif</td>
+                {% else %}
+                    <td class="text-danger">Inactif</td>
+                {% endif %}
+            </tr>
+        {% endif %}
+        <tr>
+            <th scope="row">Date de création :</th>
+            <td>{{ user.createdAt | format_datetime('short', 'short', locale='fr') }}</td>
+        </tr>
+    </tbody>
+</table>
+{% for message in app.flashes('notice') %}
+    <div class="alert alert-info" role="alert">
+        {{ message }}
+    </div>                
+{% endfor %}

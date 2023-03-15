@@ -1,0 +1,18 @@
+<a href="{{ path('user_add') }}" class="list-group-item list-group-item-action">Nouveau salarié</a>
+<a href="{{ path('user_edit', { 'id': user.id }) }}" class="list-group-item list-group-item-action">Modifier informations</a>
+<a href="{{ path('user_edit_password', { 'id': user.id }) }}" class="list-group-item list-group-item-action">Modifier mot de passe</a>
+{% if app.user.id != user.id %}
+    <a class="list-group-item list-group-item-action" data-toggle="collapse" href="#delete-menu" role="button" aria-expanded="false" aria-controls="delete-menu">
+        Supprimer définitivement
+    </a>
+    <div class="collapse" id="delete-menu">
+        <div class="card card-body d-flex flex-row justify-content-around">
+            <a href="{{ path('user_delete', { 'id': user.id }) }}" role="button" class="btn btn-danger delete-confirm" id="delete-confirm">
+                Confirmer
+            </a>
+            <button role="button" class="btn btn-secondary" data-toggle="collapse" href="#delete-menu" role="button" aria-expanded="false" aria-controls="delete-menu">
+                Annuler
+            </button>
+        </div>
+    </div>
+{% endif %}

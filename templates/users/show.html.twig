@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ user.firstname | capitalize}} {{ user.lastname | first }}. 
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row flex-column-reverse flex-md-row">
+            <div class="col-12 col-md-8">
+                <p class="">
+                    <a href="{{ path('users') }}">Retour</a>
+                </p>
+                <h1 class="h4">Détails :</h1>
+                <hr>
+                {% include "users/_user-details.html.twig" %}
+            </div>
+            <div class="col-12 col-md-4">
+                <p>
+                    <span class="d-none d-md-block">Actions :</span>
+                    <button class="btn btn-secondary btn-sm btn-block d-md-none" type="button" data-toggle="collapse" data-target="#menu-collapse" aria-expanded="false" aria-controls="menu-collapse">
+                        Menu
+                    </button>
+                </p>
+                <div class="list-group d-md-none collapse" id="menu-collapse">
+                    {% include "users/_show_menu.html.twig" %}
+                </div>
+                <div class="list-group d-none d-md-block">
+                    {% include "users/_show_menu.html.twig" %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}

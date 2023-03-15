@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="h3">Contacter l'administration :</h1>
+        <p class="">
+            <a href="{{ path('schedules') }}">Retour</a>
+        </p>
+        <hr>
+        <div class="row">
+            <div class="col-12 col-md-8 offset-md-2 col-xl-6 offset-xl-3">
+                {{ form_start(form) }}
+                    {{ form_row(form.subject) }}
+                    {{ form_row(form.content) }}
+                    <input class="btn btn-primary" type="submit" value="Envoyer"/> 
+                    {{ form_errors(form) }}  
+                {{ form_end(form) }} 
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $('form').on('submit', function(e) {
+            const subject = $('#contact_subject').val();
+            const content = $('#contact_content').val();
+
+            if (subject.length > 100) {
+                $('#contact_subject')[0].setCustomValidity('100 caractère maximum')
+                e.preventDefault();
+            } 
+            if (content.length > 500 || content.length < 10) {
+                $('#contact_content')[0].setCustomValidity('Le message doit faire entre 10 et 500 caractères')
+                e.preventDefault();
+            }
+            e.currentTarget.reportValidity();
+        })
+
+        $('input, textarea').on('change', function(e) {
+            e.currentTarget.setCustomValidity('');
+        })
+
+        $('#contact_content').on('input', function(e) {
+            let counter = e.currentTarget.value.length;
+            $('#contact_content_help').html(counter + ' / 500')
+        })
+    </script>
+{% endblock %}

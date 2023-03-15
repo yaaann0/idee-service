@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier salarié{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="h3">Modifications salarié :</h1>
+        <p class="">
+            <a href="{{ path('users') }}">Retour</a>
+        </p>
+        <hr>
+        <div class="row">
+            <div class="col-12 col-md-8 offset-md-2 col-xl-6 offset-xl-3">
+                {% include "users/_form.html.twig" %}       
+            </div>
+        </div>
+    </div>
+{% endblock %}

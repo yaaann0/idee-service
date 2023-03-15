@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	</head>
+	<body style="width:21cm; height:29.7cm; margin:1cm; {# font-size:0.9rem; #} line-height: 1.5;box-sizing: border-box;">
+		<table style="border: none; width:19cm;">
+			<tbody>
+				<tr>
+					<td style="width: 100px;">
+						<img src="{{ asset('assets/logo_idee_22mars.jpg') }}" alt="logo idee services" style="float: left;height:75px;margin-bottom: 5px;margin-right: 5px;">
+					</td>
+					<td>
+						<h1 style="margin-bottom: 5px;font-weight: 500;line-height: 1.2;font-size: 2rem;">FICHE DE TRAVAIL</h1>
+					</td>
+					<td style="text-align: center;">
+						<p style="font-size: 1.25rem;font-weight: 300;margin: 5px;">Semaine</p>
+						<p style="font-size: 1.25rem;font-weight: 300;margin: .5px;">n° <strong style="font-size: 1.75rem;">{{ weeksheet.beginAt | format_date(pattern="w") }}</strong></p>
+						<p style="font-size: 1.75rem;margin: 5px;{# border: 1px solid #343a40; #}padding: 5px;">{{ weeksheet.beginAt | format_date(pattern="yyyy") }}</p>
+					</td>	
+				</tr>
+			</tbody>
+		</table>
+		<p style="font-size: 1.25rem;font-weight: 300;box-sizing: border-box;">
+			{{ weeksheet.user.lastname | upper }} {{ weeksheet.user.firstname | capitalize }} -	{{ weeksheet.user.department.fullname }}
+		</p>
+		<table style="border-collapse: collapse;width:19cm;">
+			<tbody>
+				{% for day in weeksheet.workDays %}
+					<tr style="background-color: #d0cece;height: 30px;box-sizing: border-box;border: 1px solid lightgray;">
+						<td colspan="3" style="height: 30px;padding-right: 15px;padding-left: 15px;box-sizing: border-box;">
+							{{ day.datetime | format_date(pattern="eeee d MMMM") }}
+						</td>
+						<td style="text-align: center;padding-right: 15px;padding-left: 15px;box-sizing: border-box;">total</td>
+					</tr>
+					{% for task in day.tasks %}
+						<tr style="border: 1px solid lightgray;height: 30px;">
+							<td style="height: 30px;padding-right: 15px;padding-left: 15px;box-sizing: border-box;">
+								{% set clientName = task.clientName|split(' - ') %}
+								{{ clientName[0] }}
+							</td>
+							<td style="padding-right: 15px;padding-left: 15px;box-sizing: border-box;text-align: center !">
+								{{ task.beginAt | format_time(pattern="HH:mm") }}
+							</td>
+							<td style="padding-right: 15px;padding-left: 15px;box-sizing: border-box;text-align: center !">
+								{{ task.EndAt | format_time(pattern="HH:mm") }}
+							</td>
+							<td style="text-align: center;padding-right: 15px;padding-left: 15px;box-sizing: border-box;">
+								{% set beginAt = date(task.beginAt).diff(date("January 00, 1970 00:00")) %}
+								{% set interval = date(task.EndAt).diff(date(task.beginAt)) %}
+								{% set duration = (interval.h + (interval.i / 60)) %}
+								{{ duration }}
+							</td>
+						</tr>
+					{% endfor %}
+					<tr style="height: 30px;border: 1px solid lightgray;height: 30px;">
+						<td colspan="3" style="height: 30px;text-align: right;padding-right: 15px;padding-left: 15px;box-sizing: border-box;">
+							Total jour = 
+						</td>
+						<td style="text-align: center;padding-right: 15px;padding-left: 15px;box-sizing: border-box;">
+							<strong>{{ durations[day.id] }}</strong>
+						</td>
+					</tr>
+				{% endfor %}
+				<tr style="margin-right: -15px;margin-left: -15px;box-sizing: border-box;">
+					<td colspan="2" style="width: 640px;text-align: center;font-style: italic;flex: 1 1 auto;margin-top: 0;margin-bottom: 1rem;box-sizing: border-box;">
+					{% if weeksheet.state.slug == 'signed' %}
+						{% if weeksheet.signedAt %}
+						Signée le {{ weeksheet.signedAt | format_datetime(pattern="dd/MM/yyyy à HH:mm") }}
+						{% endif %}
+						{% if weeksheet.validator %}
+							par <strong>{{ weeksheet.validator.firstname | capitalize }}  {{ weeksheet.validator.lastname | upper }}</strong>
+						{% endif %}
+					{% endif %}
+					</td>
+					<td style="text-align: center;margin-bottom: 0;margin-top: 0;margin-bottom: 1rem;box-sizing: border-box;width: 120px;font-size: 1.25rem;">
+						<strong>Total =</strong>
+					</td>
+					<td style="text-align: center;padding: .5rem;border: 1px solid #dee2e6;width: 120px;font-size: 1.25rem;">
+						<strong>{{ durations['week'] }}</strong>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		{% if weeksheet.comment %}
+		<div style="margin:20px;padding:5px 10px;border:1px solid black; border-radius:10px; font-size:small">
+			<p style="font-weight:bold;margin:0">Commentaire </p>
+			<p style="margin:0">{{ weeksheet.comment }}</p>
+		</div>
+		{% endif %}
+		{% if weeksheet.adminComment %}
+		<div style="margin:20px;padding:5px 10px;border:1px solid black; border-radius:10px; font-size:small">
+			<p style="font-weight:bold;margin:0">Commentaire administrateur</p>
+			<p style="margin:0">{{ weeksheet.adminComment }}</p>
+		</div>
+		{% endif %}
+		<p style="font-style: italic; margin-top:10px; font-size:small">
+			Le {{ date() | format_datetime(pattern="eeee d MMMM y - HH:mm") }} 
+		</p>
+	</body>
+</html>

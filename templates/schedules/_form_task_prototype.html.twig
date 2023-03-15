@@ -1,0 +1,53 @@
+{% if task.vars.value is not null %}
+    {% set isUpdated = task.vars.value.isUpdated %}
+    {% set updateDescription = task.vars.value.updateDescription %}
+{% else %}
+    {% set isUpdated = false %}
+    {% set updateDescription = null %}
+{% endif %}
+{% if taskIndex is not defined %}
+    {% set taskIndex = '__task_prot__' %}
+{% endif %}
+
+<div 
+    id="schedule_workDays_{{ dayIndex }}_tasks_{{ taskIndex }}"
+    class="form-row align-items-center task{% if isUpdated %} border border-danger rounded-lg my-1{% endif %}"
+    >
+    <div class="col-auto px-2" style="font-size:50%">
+        <i class="fas fa-circle text-muted"></i>
+    </div>
+    <div class="col-10 col-md-3 px-2 position-relative client" id="{{ dayIndex }}_days_client_tasks_{{ taskIndex }}"> 
+        {{ form_widget(task.clientName) }}
+        <ul class="list-group position-absolute client_suggests"></ul>
+    </div>
+    <div class="col-12 col-sm-6 col-md-3 d-flex align-items-center flex-nowrap px-2">
+        {{ form_label(task.beginAt) }}
+        {{ form_widget(task.beginAt) }}
+    </div>
+    <div class="col-12 col-sm-6 col-md-3 d-flex align-items-center flex-nowrap px-2">
+        {{ form_label(task.endAt) }}
+        {{ form_widget(task.endAt) }}
+    </div>
+    <div class="col-8 col-sm-10 col-md-1 row align-items-center">
+        <div class="d-md-none col-auto mr-auto">Total interv. = </div>
+        <div class="">
+            <input type="text" readonly class="form-control-plaintext durations" id="{{ dayIndex }}_days_duration_tasks_{{ taskIndex }}" value="0.0">
+        </div>
+    </div>
+    <div class="col-4 col-sm-2 mt-2 mb-2 my-md-0 text-nowrap row align-items-center flex-nowrap justify-content-end">
+        {% if isUpdated %}
+            <span class="badge badge-info mx-2">!</span>
+        {% endif %}
+        <button type="button" class="btn btn-outline-success mx-2 font-weight-bold add_task" id="{{ dayIndex }}_days_add_tasks_{{ taskIndex }}">+</button>
+        <button type="button" class="btn btn-outline-danger mx-2 remove_task" id="{{ dayIndex }}_days_remove_tasks_{{ taskIndex }}">X</button>
+    </div>
+    {{ form_errors(task.clientName) }}
+    {{ form_errors(task.beginAt) }}
+    {{ form_errors(task.endAt) }}
+    {% if updateDescription is not null %}
+        <div class="col-12 mb-1 mt-1 pr-3 pl-3 text-right text-danger font-italic">
+            Modifications : {{ updateDescription }}
+        </div>
+    {% endif %}
+    <hr class="col-11 d-md-none m-0 border-info">
+</div>

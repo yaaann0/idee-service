@@ -1,0 +1,76 @@
+@page {
+    size: auto;
+}
+
+#main-logo {
+    max-height: 100px;   
+}
+
+#search-filter input, #search-filter select{
+    max-width: 120px;
+}
+
+@media (max-width: 992px) {
+    #main-logo {
+        max-height: 50px;   
+    }
+}
+
+.task_input_time select, 
+.vacations select
+{
+    max-width: 60px;
+    padding: 5px 10px;
+}
+
+/* @media (min-width: 1024px) { */
+    .task_input_time select {
+        /* for Firefox */
+        -moz-appearance: none;
+        /* for Chrome */
+        -webkit-appearance: none;
+    }
+    
+    /* For IE10 */
+    .task_input_time select::-ms-expand {
+        display: none;
+    }
+/* } */
+
+.bg-idee-green {
+    background-color: #6fa243;
+}
+
+.bg-bordeaux {
+    background-color: #953952;
+}
+
+hr, .border-bordeaux {
+    border-color: #953952;
+}
+
+.client_suggests li {
+    cursor: pointer;
+    z-index: 50 !important;
+}
+
+.bg-lightgray {
+    background-color: #e9ecef;
+}
+
+.durations {
+    max-width: 70px;
+}
+
+.table_line td{
+    cursor: pointer;
+}
+
+/* ARROW BUTTONS */
+
+.time_change_arrows button {
+    margin: 2px 5px;
+    width: 20px;
+    height: 20px;
+    font-size: 75%;
+}

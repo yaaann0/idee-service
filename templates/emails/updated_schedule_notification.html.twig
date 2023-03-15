@@ -1,0 +1,22 @@
+{% extends 'emails/base.html.twig' %}
+
+{% block title %}Feuille d'heures modifiée{% endblock %}
+
+{% block body %}
+    
+    <div id="main" class="">
+        <p>Bonjour,</p>
+
+        <p>
+            {{message}}.
+        </p>
+        <p>
+            Semaine <strong>n° {{ weeksheet.beginAt | format_date(pattern="w") }}</strong> du {{ weeksheet.beginAt | format_date(pattern="eeee d") }} au {{ weeksheet.finishAt | format_date(pattern="eeee d MMMM yyyy") }}
+        </p>
+
+        <a href="{{ url('schedules_show', {id: weeksheet.id}) }}">Consulter la feuille d'heure.</a>
+
+        <p>Bonne réception.</p>
+    </div>
+
+{% endblock %}

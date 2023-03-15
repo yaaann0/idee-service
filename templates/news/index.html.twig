@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Actualités{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="h4">
+            <span class="mr-3">Actualités : </span>
+            {% if is_granted('ROLE_ADMIN') %} 
+                <a role="button" class="btn btn-success" href="{{ path('news_add') }}">Ajouter une actualité</a>
+            {% endif %}
+        </h1>
+        <hr>
+        <div class="row flex-column-reverse flex-md-row">
+            <div class="col-12 col-md-8 offset-md-2 col-xl-6 offset-xl-3">
+                {% for message in app.flashes('notice') %}
+                    <div class="alert alert-info m-3" role="alert">
+                        {{ message }}
+                    </div>                
+                {% endfor %}
+                {% for message in app.flashes('errors') %}
+                    <div class="alert alert-danger m-3" role="alert">
+                        {{ message }}
+                    </div>                
+                {% endfor %}
+                <div class="navigation d-flex justify-content-center">
+                    {{ knp_pagination_render(newsList) }}
+                </div>
+                <table class="table table-striped bg-white">
+                    <thead>
+                        <tr>
+                            <th scope="col">Titre</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Pièce jointe</th>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <th scope="col"></th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for news in newsList %}
+                            <tr class="position-relative">
+                                <td>{{ news.title }}</td>
+                                <td>{{ news.createdAt | format_date(pattern="dd/MM/YYYY") }}</td>
+                                <td><a href="{{ vich_uploader_asset(news, 'newsFile') }}">Télécharger</a></td>
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <td><a href="{{ path('news_show', {'id': news.id}) }}">Détails</a></td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="navigation d-flex justify-content-center">
+                    {{ knp_pagination_render(newsList) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

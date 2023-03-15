@@ -1,0 +1,133 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Feuilles d'heures{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row flex-column-reverse flex-md-row">
+            <div class="col-12 col-md-8">
+                <h1 class="h4">
+                    Horaires d'intervention de {{ app.user.firstname }} {{ app.user.lastname | upper }} :
+                </h1>
+                <hr>
+                {% for message in app.flashes('notice') %}
+                    <div class="alert alert-info m-3" role="alert">
+                        {{ message }}
+                    </div>                
+                {% endfor %}
+                {% for message in app.flashes('errors') %}
+                    <div class="alert alert-danger m-3" role="alert">
+                        {{ message }}
+                    </div>                
+                {% endfor %}
+                <div class="navigation d-flex justify-content-center">
+                    {{ knp_pagination_render(weeksheets) }}
+                </div>
+                <table class="table table-striped table-hover bg-white">
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                <span class="d-none d-sm-block">Semaine </span>
+                                <span class="d-sm-none">N° </span>
+                            </th>
+                            <th scope="col" class="d-none d-md-table-cell">Année</th>
+                            <th scope="col">du</th>
+                            <th scope="col" class="d-none d-md-table-cell">au</th>
+                            <th scope="col">Etat</th>
+                            <th scope="col">
+                                <span class="d-none d-md-block">Action</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for weeksheet in weeksheets %}
+                            <tr class="position-relative table_line">
+                                <td>{{ weeksheet.beginAt | format_date(pattern="w") }}</td>
+                                <td class="d-none d-md-table-cell">{{ weeksheet.beginAt | format_date(pattern="yyyy") }}</td>
+                                <td class="text-nowrap">{{ weeksheet.beginAt | format_date(pattern="eee d MMM") }}</td>
+                                <td class="d-none d-md-table-cell">{{ weeksheet.finishAt | format_date(pattern="eee d MMM") }}</td>
+                                <td class="font-italic">
+                                    {% if weeksheet.state.slug == 'validated' %}
+                                        <span class="text-success">
+                                    {% elseif weeksheet.state.slug == 'signed' %}
+                                        <span class="text-white bg-success rounded-pill py-1 px-2">
+                                    {% else %}
+                                        <span class="text-danger">
+                                    {% endif %}
+                                    {{ weeksheet.state.label }} </span>
+                                </td>
+                                <td class="font-italic text-nowrap d-flex">
+                                    {% if weeksheet.state.slug == 'draft' %}
+                                        <a href="{{ path('schedules_edit', { 'id': weeksheet.id }) }}" class="table_line_link{# stretched-link #}">
+                                            <span class="d-none d-md-block mx-2">Saisir</span>
+                                        </a>
+                                        {% else %}
+                                        <a href="{{ path('schedules_show', { 'id': weeksheet.id }) }}" class="table_line_link{# stretched-link #}">
+                                            <span class="d-none d-md-block mx-2">Consulter</span>
+                                        </a>
+                                    {% endif %}
+
+                                    {% if weeksheet.isUpdated %}
+                                        <span class="badge badge-warning p-2">!</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="navigation d-flex justify-content-center">
+                    {{ knp_pagination_render(weeksheets) }}
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="card mb-3 border-bordeaux">
+                    <div class="card-header py-2 bg-idee-green text-white d-flex align-items-center justify-content-between">
+                        <span class="mx-2">Dernières actualités</span><small><u><a href="{{ path('news') }}" class="text-white mx-2">voir tout</a></u></small>
+                    </div>
+                    <div class="list-group list-group-flush">
+                        {% if lastNews is empty %}
+                            <li class="list-group-item py-1">
+                                Pas d'actualités à afficher...
+                            </li>
+                        {% endif %}
+                        {% for news in lastNews %}
+                            <a href="{{ vich_uploader_asset(news, 'newsFile') }}" class="list-group-item list-group-item-action py-2">
+                                {{ news.title }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <p class="mb-1 px-2">
+                    <span class="d-none d-md-block">Actions :</span>
+                    <button class="btn btn-secondary btn-sm btn-block d-md-none" type="button" data-toggle="collapse" data-target="#menu-collapse" aria-expanded="false" aria-controls="menu-collapse">
+                        Menu
+                    </button>
+                </p>
+                <a class="list-group-item list-group-item-action py-1" data-toggle="collapse" href="#add-menu" role="button" aria-expanded="false" aria-controls="delete-menu">
+                    Ajout manuel
+                </a>
+                <div class="collapse" id="add-menu">
+                    <div class="card card-body d-flex flex-row justify-content-around">
+                        {{ form_start(form) }}
+                            <div class="form-group row align-items-center">
+                                <div class="col-8">
+                                    {{ form_widget(form.week) }}
+                                </div>
+                                <div class="col-4">
+                                    <input class="btn btn-primary btn-sm" type="submit" value="Ajouter"/>  
+                                </div>
+                            </div> 
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+                <div class="list-group d-md-none collapse mb-3" id="menu-collapse">
+                    {% include "schedules/_user_menu.html.twig" %}
+                </div>
+                <div class="list-group d-none d-md-block">
+                    {% include "schedules/_user_menu.html.twig" %}
+                </div>
+                <div class="text-light">-------------</div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	</head>
+	<body style="width:29.7cm; height:21cm; margin:1cm; {# font-size:0.9rem; #} line-height: 1.5;box-sizing: border-box;">
+		<table style="border: none; width:28cm;">
+			<tbody>
+				<tr>
+					<td style="width: 100px;">
+						<img src="{{ asset('assets/logo_idee_22mars.jpg') }}" alt="logo idee services" style="float: left;height:75px;margin-bottom: 5px;margin-right: 5px;">
+					</td>
+					<td>
+						<h1 style="margin-bottom: 5px;font-weight: 500;line-height: 1.2;font-size: 2rem;">Demande de congés</h1>
+					</td>
+					<td style="text-align: center;">
+						<p style="font-size: 1.25rem;font-weight: 300;margin: 5px;">Date : {{ date() | format_datetime(pattern="eeee d MMMM y") }}</p>
+					</td>	
+				</tr>
+			</tbody>
+		</table>
+		<p style="font-size: 1.25rem;font-weight: 300;box-sizing: border-box;">
+			{{ sheet.user.lastname | upper }} {{ sheet.user.firstname | capitalize }} -	{{ sheet.user.department.fullname }}
+		</p>
+		<table style="border-collapse: collapse;width:28cm;">
+			<thead>
+				<tr style="height: 40px;border: 1px solid black;">
+					<th style="border: 1px solid lightgray;padding: 15px;">#</th>
+					<th style="border: 1px solid lightgray;padding: 15px;">Motif</th>
+					<th style="border: 1px solid lightgray;padding: 15px;"></th>
+					<th style="border: 1px solid lightgray;padding: 15px;">Début du congé</th>
+					<th style="border: 1px solid lightgray;padding: 15px;">Reprise du travail</th>
+				</tr>
+			</thead>	
+			<tbody>
+				{% set total = 0 %}
+				{% for vacation in sheet.vacations %}
+					<tr style="height: 10px;box-sizing: border-box;border: 1px solid black;">
+						<td colspan="5"></td>
+					</tr>
+					<tr style="height: 40px;box-sizing: border-box;border: 1px solid black;">
+						<td rowspan="2" style="border: 1px solid lightgray;height: 40px;padding-right: 15px;padding-left: 15px;box-sizing: border-box;text-align: center;">
+							{{ loop.index }}
+						</td>
+						<td rowspan="2" style="border: 1px solid lightgray;height: 40px;padding-right: 15px;padding-left: 15px;box-sizing: border-box;">
+							{{ vacation.reason }}
+						</td>
+						<td style="border: 1px solid lightgray;height: 40px;padding-right: 15px;padding-left: 15px;box-sizing: border-box;text-align: center;">
+							Choix A
+						</td>
+						<td style="border: 1px solid lightgray;height: 40px;padding-right: 15px;padding-left: 15px;box-sizing: border-box;text-align: center;">
+							{{ vacation.first.beginAt | format_date(pattern=" d/MM/YYYY - HH:mm") }}
+						</td>
+						<td style="border: 1px solid lightgray;height: 40px;padding-right: 15px;padding-left: 15px;box-sizing: border-box;text-align: center;">
+							{{ vacation.first.finishAt | format_date(pattern=" d/MM/YYYY - HH:mm") }}
+						</td>
+					</tr>
+					<tr style="height: 40px;box-sizing: border-box;border: 1px solid black;">
+						<td style="border: 1px solid lightgray;height: 40px;padding-right: 15px;padding-left: 15px;box-sizing: border-box;text-align: center;">
+							Choix B
+						</td>
+						<td style="border: 1px solid lightgray;height: 40px;padding-right: 15px;padding-left: 15px;box-sizing: border-box;text-align: center;">
+							{% if vacation.second is not null %}
+								{{ vacation.second.beginAt | format_date(pattern=" d/MM/YYYY - HH:mm") }}
+							{% endif %}
+						</td>
+						<td style="border: 1px solid lightgray;height: 40px;padding-right: 15px;padding-left: 15px;box-sizing: border-box;text-align: center;">
+							{% if vacation.second is not null %}
+								{{ vacation.second.finishAt | format_date(pattern=" d/MM/YYYY - HH:mm") }}
+							{% endif %}
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</body>
+</html>

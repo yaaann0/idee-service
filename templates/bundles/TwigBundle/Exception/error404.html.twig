@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <h1>Page non trouvée</h1>
+
+        <p>La page demandée n'a pas pu être localisée. Vérifiez que l'URL ne contient pas une erreur.</p>
+        <p><a href="{{ path('home') }}">Revenir à la page d'accueil</a></p>
+    </div>
+{% endblock %}

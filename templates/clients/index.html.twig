@@ -1,0 +1,124 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Clients{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="h3">
+            <span class="mr-3">Liste des clients : </span>
+            {% if is_granted('ROLE_ADMIN') %} 
+                <a role="button" class="btn btn-success" href="{{ path('client_add') }}">Nouveau</a>
+            {% endif %}
+        </h1>
+        <hr>
+        {% for message in app.flashes('notice') %}
+            <div class="alert alert-info" role="alert">
+                {{ message }}
+            </div>                
+        {% endfor %}
+        <div class="navigation d-flex justify-content-center">
+            {{ knp_pagination_render(clients) }}
+        </div> 
+        <table class="table table-striped table-hover bg-white">
+            <thead>
+                <tr>
+                    {% set currentOrder = app.request.get('order') %}
+                    {% set orderBy = app.request.get('orderBy') %}
+                    {% if currentOrder == 'ASC' %}
+                        {% set order = 'DESC' %}
+                        {% set icon = 'fas fa-caret-down' %}
+                    {% else %}
+                        {% set order = 'ASC' %}
+                        {% set icon = 'fas fa-caret-up' %}
+                    {% endif %}
+                    {% set queryParams = app.request.query.all %}
+                    {% set nameParams = queryParams|merge({ 'orderBy': 'fullname', 'order': order }) %}
+                    {% set postalParams = queryParams|merge({ 'orderBy': 'postalCode', 'order': order }) %}
+                    {% set cityParams = queryParams|merge({ 'orderBy': 'city', 'order': order }) %}
+                    {% set createdParams = queryParams|merge({ 'orderBy': 'createdAt', 'order': order }) %}
+                    {% set archivedParams = queryParams|merge({ 'orderBy': 'archivedAt', 'order': order }) %}
+
+                    <th scope="col">
+                        <a class="order" href="{{ path('clients', nameParams) }}">
+                            Nom {% if orderBy == 'fullname' %}<i class="{{ icon }}"></i>{% endif %}
+                        </a>
+                    </th>
+                    <th scope="col" class="d-none d-md-table-cell">Adresse</th>
+                    <th scope="col" class="d-none d-md-table-cell">
+                        <a class="order" href="{{ path('clients', postalParams) }}">
+                            Code postal {% if orderBy == 'postalCode' %}<i class="{{ icon }}"></i>{% endif %}
+                        </a>
+                    </th>
+                    <th scope="col">
+                        <a class="order" href="{{ path('clients', cityParams) }}">
+                            Ville {% if orderBy == 'city' %}<i class="{{ icon }}"></i>{% endif %}
+                        </a>
+                    </th>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <th scope="col">
+                            <a class="order" href="{{ path('clients', createdParams) }}">
+                                Création {% if orderBy == 'createdAt' %}<i class="{{ icon }}"></i>{% endif %}
+                            </a>
+                        </th>
+                        <th scope="col" class="d-none d-md-table-cell">
+                            <a class="order" href="{{ path('clients', archivedParams) }}">
+                                Archivé {% if orderBy == 'archivedAt' %}<i class="{{ icon }}"></i>{% endif %}
+                            </a>
+                        </th>
+                    {% endif %}
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="search-filter">
+                    {{ form_start(form) }}
+                        <td>{{ form_widget(form.fullname, {value: search.fullname}) }}</td>
+                        <td class="d-none d-md-table-cell"></td>
+                        <td class="d-none d-md-table-cell">{{ form_errors(form, {value: search.postalCode}) }}{{ form_widget(form.postalCode) }}</td>
+                        <td>{{ form_widget(form.city, {value: search.city}) }}</td>
+                        <td><button type="submit" class="btn btn-primary">Filtrer</button></td>
+                        <td class="d-none d-md-table-cell">
+                            {% if queryParams %}
+                                <a role="button" class="btn btn-secondary" href="{{ path('clients') }}">Réinit.</a>
+                            {% endif %}
+                        </td>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <td></td>
+                        {% endif %}
+                    {{ form_end(form) }}
+                </tr>
+                {% for client in clients %}
+                    <tr class="position-relative table_line {% if client.archivedAt is not null %} bg-dark text-white {% endif %}">
+                        <td>{{ client.fullname }}</td>
+                        <td class="d-none d-md-table-cell">{{ client.adress }}</td>
+                        <td class="d-none d-md-table-cell">{{ client.postalCode }}</td>
+                        <td>{{ client.city }}</td>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <td>{{ client.createdAt | format_datetime('short', 'short', locale='fr') }}</td>
+                            <td class="d-none d-md-table-cell">
+                                {% if client.archivedAt is not null %}
+                                    {{ client.archivedAt | format_datetime('short', 'short', locale='fr') }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td> 
+                            <td>
+                                <a href="{{ path('client_show', { 'id': client.id }, relative = true) }}" class="table_line_link{# stretched-link #}">
+                                    <span class="d-none d-md-block">Détails</span>
+                                </a>
+                            </td>  
+                        {% else %}
+                            <td></td>
+                            <td></td>  
+                        {% endif %}               
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table> 
+        <div class="navigation d-flex justify-content-center">
+            {{ knp_pagination_render(clients) }}
+        </div>   
+    </div>
+
+{% endblock %}
+

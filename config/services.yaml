@@ -1,0 +1,68 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    accounting_email: '%env(ACCOUNTING_EMAIL)%'
+    tmp_directory: "%kernel.project_dir%/tmp/mpdf"
+    interval_before: '%env(MANUAL_WEEK_BEFORE)%'
+    interval_after: '%env(MANUAL_WEEK_AFTER)%'
+    sheets_lifespan_in_month: "%env(SHEETS_LIFESPAN_IN_MONTH)%"
+    meal_grant: '%env(INDEMNITE_REPAS)%'
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+            - '../src/Tests/'
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    App\Controller\:
+        resource: '../src/Controller/'
+        tags: ['controller.service_arguments']
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+
+    App\Service\WeeksheetProvider:
+        arguments:
+            $intervalBefore: '%interval_before%'
+            $intervalAfter: '%interval_after%'
+            $sheetsMonthLifespan: '%sheets_lifespan_in_month%'
+
+    App\Notification\UserNotification:
+        arguments:
+            $accountingEmail: '%accounting_email%'
+
+    App\Notification\SchedulesNotification:
+        arguments:
+            $accountingEmail: '%accounting_email%'
+
+    App\Notification\ContactNotification:
+        arguments:
+            $accountingEmail: '%accounting_email%'
+
+    App\Notification\GrantNotification:
+        arguments:
+            $accountingEmail: '%accounting_email%'
+
+    App\Notification\VacationNotification:
+        arguments:
+            $accountingEmail: '%accounting_email%'
+
+    App\Service\PDFConverter:
+        arguments:
+            $tmpDirectory: '%tmp_directory%'
+            $mealGrant: '%meal_grant%'

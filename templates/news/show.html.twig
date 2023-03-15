@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ news.title }}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row flex-column-reverse flex-md-row">
+            <div class="col-12 col-md-8">
+                <p class="">
+                    <a href="{{ path('news') }}">Retour</a>
+                </p>
+                <h1 class="h4">
+                    Détail :
+                </h1>
+                <hr>
+                <table class="table bg-white">
+                    <tbody>
+                        <tr>
+                            <th scope="row">Titre :</th>
+                            <td>{{ news.title }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Date :</th>
+                            <td>{{ news.createdAt | format_datetime('short', 'none', locale='fr') }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Pièce jointe :</th>
+                            <td><a href="{{ vich_uploader_asset(news, 'newsFile') }}">Télécharger</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+                {% for message in app.flashes('notice') %}
+                    <div class="alert alert-info" role="alert">
+                        {{ message }}
+                    </div>                
+                {% endfor %}
+            </div>
+            <div class="col-12 col-md-4">
+                <p>
+                    <span class="d-none d-md-block">Actions :</span>
+                    <button class="btn btn-secondary btn-sm btn-block d-md-none" type="button" data-toggle="collapse" data-target="#menu-collapse" aria-expanded="false" aria-controls="menu-collapse">
+                        Menu
+                    </button>
+                </p>
+                <div class="list-group d-md-none collapse mb-3" id="menu-collapse">
+                    {% include "news/_admin_menu.html.twig" %}
+                </div>
+                <div class="list-group d-none d-md-block">
+                    {% include "news/_admin_menu.html.twig" %}
+                </div>
+                <div class="text-light">-------------</div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

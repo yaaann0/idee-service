@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=0.5">
+		<meta name="robots" content="noindex">      
+		<title>
+			Semaine {{ weeksheet.beginAt | format_date(pattern="w") }}
+			- {{ weeksheet.user.lastname | capitalize }} {{ weeksheet.user.firstname | first }}.
+		</title>
+	</head>
+	<body style="width:29.7cm; height:21cm; margin:10px; font-size:1rem; line-height: 1.5;box-sizing: border-box;font-size: 1rem;font-weight: 400;line-height: 1.5;color: #212529;text-align: left;background-color: #fff;">
+		<table style="border-collapse: collapse;width: 1122px;padding-right: 15px;padding-left: 15px;margin-right: auto;margin-left: auto;">
+			<thead style="box-sizing: border-box;margin-right: -15px;margin-left: -15px;">
+				<tr>
+					<th colspan="2" style="box-sizing: border-box;width: 240px;padding-right: 15px;padding-left: 15px;">
+						<img src="{{ asset('assets/logo_idee_22mars.jpg') }}" alt="logo idee services" style="float: left;height:75px; margin-right: .5rem !important;float: left !important;border-style: none;">
+						<h1 style="margin-bottom: .5rem;font-weight: 500;line-height: 1.2;font-size: 2rem;">FICHE DE <br>TRAVAIL</h1>
+					</th>
+					<th style="width: 480px;font-size: 1.25rem;font-weight: 300;padding-right: 15px;padding-left: 15px;box-sizing: border-box;">
+						{{ weeksheet.user.lastname | upper }} {{ weeksheet.user.firstname | capitalize }} <br>
+						{{ weeksheet.user.department.fullname }}
+					</th>
+					<th style="width: 80px;padding-right: 15px;padding-left: 15px;text-align: center !important;box-sizing: border-box;">
+						<p style="font-size: 1.25rem;font-weight: 300;margin: .5rem !important;">Semaine</p>
+						<p style="font-size: 1.25rem;font-weight: 300;margin: .5rem !important;">n° <strong style="font-size: 1.75rem;">{{ weeksheet.beginAt | format_date(pattern="w") }}</strong></p>
+						<p style="font-size: 1.75rem;margin: .5rem !important;border: 1px solid #343a40 !important;padding: .5rem !important;">{{ weeksheet.beginAt | format_date(pattern="yyyy") }}</p>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr style="margin-right: -15px;margin-left: -15px;margin-top: 15px;background-color: #d0cece !important;height: 50px;box-sizing: border-box;">
+					<td style="width: 80px;color: #dc3545 !important;padding-top: 1rem !important;padding-right: 15px;padding-left: 15px;box-sizing: border-box;">DATE</td>
+					<td colspan="2" style="width: 640px;padding-right: 15px;padding-left: 15px;"></td>
+					<td style="padding-top: 1rem !important;width: 80px;padding-right: 15px;padding-left: 15px;box-sizing: border-box;">HEURES</td>
+				</tr>
+				{% for day in weeksheet.workDays %}
+					<tr style="margin-right: -15px;margin-left: -15px;border: 1px solid #dee2e6 !important;height: 85px;">
+						<td style="padding-bottom: 1rem !important;padding-top: 1rem !important;width: 80px;padding-right: 15px;padding-left: 15px;box-sizing: border-box;">
+							{{ day.datetime | format_date(pattern="eeee d MMM") }}
+						</td>
+						<td colspan="2" style="width: 640px;padding-right: 15px;padding-left: 15px;box-sizing: border-box;vertical-align: top;">
+							<div style="height: 15px;margin-left: .25rem !important;margin-right: .25rem !important;position: relative !important;box-sizing: border-box;">
+								{% for i in 5..9 %}
+									<span style="height: 15px;margin: 0 41px 0 0;z-index: 2;background-color: transparent !important; box-sizing: border-box;font-size: 80%;font-weight: 400;">
+										{{ i }}
+									</span>
+								{% endfor %}
+								{% for i in 10..20 %}
+									<span style="height: 15px;margin: 0 32px 0 0;z-index: 2;background-color: transparent !important; box-sizing: border-box;font-size: 80%;font-weight: 400;">
+										{{ i }}
+									</span>
+								{% endfor %}
+							</div>
+							<div style="margin-top: 5px;height: 12px;margin-left: .25rem !important;margin-right: .25rem !important;box-sizing: border-box;border-bottom: 1px solid #343a40 !important;overflow: hidden;">
+								{% for i in 5..20 %}
+									<span style="margin: 0;z-index: 2;color: white !important; box-sizing: border-box;border-left: 1px solid #343a40 !important;">
+										{% for i in 0..3 %}
+										<span style="margin: 0 1.4px 0 0;z-index: 2;color: white !important; box-sizing: border-box;border-left: 1px solid #dee2e6 !important;">
+											-
+										</span>
+										{% endfor %}
+									</span>
+								{% endfor %}
+								{% for task in day.tasks %}
+									{% set beginAt = date(task.beginAt).diff(date("January 00, 1970 00:00")) %}
+									{% set begin = (beginAt.h + (beginAt.i / 60) - 5)  %}
+									{% set interval = date(task.EndAt).diff(date(task.beginAt)) %}
+									{% set duration = (interval.h + (interval.i / 60))  %}
+									{% if loop.index is odd %}
+										{% set fillColor = '#d2232c' %}
+									{% else %}
+										{% set fillColor = '#17a2b8' %}
+									{% endif %}
+									<div style="left:{{begin * 52 }}px;width:{{duration * 52 }}px;top: -5px;z-index: 1;position: absolute !important;box-sizing: border-box;">
+										<div style="width:{{duration * 52 }}px;height: 12px;color: white;background-color: {{ fillColor }};margin: 6px -3px 0px -3px;">.</div>
+										{% set clientName = task.clientName|split(' - ') %}
+										<p style="max-height: 40px;line-height: 20px;min-width: 100px;overflow: hidden;margin-right: .5rem !important;margin-bottom: 0 !important;overflow: hidden !important;margin-top: 0;margin-bottom: 1rem;box-sizing: border-box;">{{ clientName[0] }}</p>
+									</div>
+								{% endfor %}
+							</div>
+						</td>
+						<td style="vertical-align: top;text-align: center !important;border-left: 1px solid #dee2e6 !important;padding-right: 15px;padding-left: 15px;padding-top: 30px;padding-bottom: 30px;box-sizing: border-box;">
+							{{ durations[day.id] }}
+						</td>
+					</tr>
+				{% endfor %}
+				<tr style="margin-right: -15px;margin-left: -15px;box-sizing: border-box;">
+					<td colspan="2" style="width: 640px;text-align: center;font-style: italic !important;flex: 1 1 auto !important;margin-top: 0;margin-bottom: 1rem;box-sizing: border-box;">
+						Le {{ date() | format_datetime(pattern="eeee d MMMM y à HH:mm") }}    
+					</td>
+					<td style="text-align: right;margin-bottom: 0 !important;margin-top: 0;margin-bottom: 1rem;box-sizing: border-box;width: 80px;">Total =</td>
+					<td style="text-align: center !important;padding: .5rem !important;border: 1px solid #dee2e6 !important;width: 80px;"><strong>{{ durations['week'] }}</strong></td>
+				</tr>
+			</tbody>
+		</table>
+	</body>
+</html>

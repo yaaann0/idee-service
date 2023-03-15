@@ -1,0 +1,56 @@
+<nav class="navbar navbar-expand-lg bg-white navbar-light mb-3">
+	<div class="container">
+		<a class="navbar-brand d-flex align-items-center" href="{{ path('home') }}" title="Accueil">
+			<img src="{{ asset('assets/logo_idee_22mars.jpg') }}" alt="logo idee services" id="main-logo" class="img-fluid">
+			<p class="m-3">Espace salariés</p>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainnavbar" aria-controls="mainnavbar" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="mainnavbar">
+			{% set routeName = app.request.attributes.get('_route') %}
+			<ul class="navbar-nav mr-auto">
+
+			</ul>
+			{% if app.user is not null %}
+				<ul class="navbar-nav my-2 my-md-0">
+					<li class="nav-item">
+						<a class="nav-link {% if routeName starts with 'schedule' %} active {% endif %}" href="{{ path('home') }}">Horaires</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link {% if routeName starts with 'news' %} active {% endif %}" href="{{ path('news') }}">Actualités</a>
+					</li>
+					{% if is_granted('ROLE_ADMIN') %}
+						<li class="nav-item">
+							<a class="nav-link {% if routeName starts with 'client' %} active {% endif %}" href="{{ path('clients') }}">Clients</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link {% if routeName starts with 'user' %} active {% endif %}" href="{{ path('users') }}">Salariés</a>
+						</li>
+					{% endif %}
+					<li class="nav-item dropdown d-none d-lg-block">
+						<a class="nav-link dropdown-toggle {% if routeName starts with 'profile' %} active {% endif %}" href="#" id="main-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							{{ app.user.firstname | capitalize}} {{ app.user.lastname | first }}.
+						</a>
+						<div class="dropdown-menu dropdown-menu-right" aria-labelledby="main-dropdown">
+							<a class="dropdown-item" href="{{ path('profile') }}">Profil</a>
+							{# <a href="https://www.ovh.com/fr/mail/" target="_blank" class="dropdown-item">Votre boite mail</a> #}
+							<div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="{{ path('app_logout') }}">Se déconnecter</a>
+						</div>
+					</li>
+					<li class="nav-item d-lg-none">
+						<a class="nav-link {% if routeName starts with 'profile' %} active {% endif %}" href="{{ path('profile') }}">Profil</a>
+					</li>
+{# 					<li class="nav-item d-lg-none">
+						<a href="https://www.ovh.com/fr/mail/" class="nav-link">Votre boite mail</a>
+					</li> #}
+					<li class="nav-item d-lg-none">
+						<a href="{{ path('app_logout') }}" class="nav-link">Se déconnecter</a>
+					</li>
+				</ul>
+			{% endif %}
+		</div>
+	</div>
+</nav>

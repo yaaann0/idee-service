@@ -1,0 +1,95 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Salariés{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<h1 class="h3">
+			<span class="mr-3">Liste des salarié : </span>
+			<a role="button" class="btn btn-success" href="{{ path('user_add') }}">Ajouter un salarié</a>
+		</h1>
+		<hr>
+		{% for message in app.flashes('notice') %}
+			<div class="alert alert-info" role="alert">
+				{{ message }}
+			</div>                
+		{% endfor %}
+		<div class="navigation d-flex justify-content-center">
+			{{ knp_pagination_render(users) }}
+		</div>
+		<table class="table table-striped table-hover bg-white">
+			<thead>
+				<tr>
+					{% set currentOrder = app.request.get('order') %}
+					{% set orderBy = app.request.get('orderBy') %}
+					{% if currentOrder == 'ASC' %}
+						{% set order = 'DESC' %}
+						{% set icon = 'fas fa-caret-down' %}
+					{% else %}
+						{% set order = 'ASC' %}
+						{% set icon = 'fas fa-caret-up' %}
+					{% endif %}
+					{% set queryParams = app.request.query.all %}
+					{% set lastnameParams = queryParams|merge({ 'orderBy': 'lastname', 'order': order }) %}
+					{% set firstnameParams = queryParams|merge({ 'orderBy': 'firstname', 'order': order }) %}
+					{% set departmentParams = queryParams|merge({ 'orderBy': 'department', 'order': order }) %}
+				
+					<th scope="col">
+						<a class="order" href="{{ path('users', lastnameParams) }}">
+							Nom {% if orderBy == 'lastname' %}<i class="{{ icon }}"></i>{% endif %}
+						</a>
+					</th>
+					<th scope="col">
+						<a class="order" href="{{ path('users', firstnameParams) }}">
+							Prénom {% if orderBy == 'firstname' %}<i class="{{ icon }}"></i>{% endif %}
+						</a>
+					</th>
+					<th scope="col">
+						<a class="order" href="{{ path('users', departmentParams) }}">
+							Catégorie {% if orderBy == 'department' %}<i class="{{ icon }}"></i>{% endif %}
+						</a>
+					</th>
+					<th scope="col" class="d-none d-md-table-cell">Statut</th>
+					<th scope="col" class="d-none d-md-table-cell">Email</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr id="search-filter">
+                    {{ form_start(form) }}
+                        <td>{{ form_widget(form.lastname, {value: search.lastname}) }}</td>
+                        <td>{{ form_widget(form.firstname, {value: search.firstname}) }}</td>
+                        <td>{{ form_widget(form.department, {value: search.department}) }}</td>
+						<td class="d-none d-md-table-cell">{{ form_widget(form.isActive, {value: search.isActive}) }}</td>
+                        <td>
+							<button type="submit" class="btn btn-primary ml-2 mr-2">Filtrer</button>
+							{% if queryParams %}
+								<a role="button" class="btn btn-secondary ml-2 mr-2" href="{{ path('users') }}">Réinit.</a>
+							{% endif %}
+						</td>
+                        <td>
+
+                        </td>
+                    {{ form_end(form) }}				
+				</tr>
+				{% for user in users %}
+					<tr class="position-relative table_line {% if user.isActive == false %}text-muted{% endif %}">
+						<td>{{ user.lastname }}</td>
+						<td>{{ user.firstname }}</td>
+						<td>{% if user.department is not null %}{{ user.department.fullname }}{% endif %}</td>
+						<td class="d-none d-md-table-cell">{% if user.isActive %}Actif{% else %}Inactif{% endif %}</td>
+						<td class="d-none d-md-table-cell">{{ user.email }}</td>
+						<td>
+							<a href="{{ path('user_show', { 'id': user.id }, relative = true) }}" class="table_line_link{# stretched-link #}">
+								<span class="d-none d-md-block">Détails</span>
+							</a>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+        <div class="navigation d-flex justify-content-center">
+            {{ knp_pagination_render(users) }}
+        </div>  
+	</div> 
+{% endblock %}

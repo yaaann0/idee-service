@@ -1,0 +1,17 @@
+{% extends 'emails/base.html.twig' %}
+
+{% block title %}Indemnités repas{% endblock %}
+
+{% block body %}
+    
+    <div id="main" class="">
+        <p>Bonjour,</p>
+
+        <p>
+            Vous trouverez ci-joint la feuille d'indemnité repas de <strong>{{ user.lastname | upper }} {{ user.firstname | capitalize }}</strong>.
+        </p>
+
+        <p>Bonne réception.</p>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,44 @@
+<div class="my-2 py-3 px-2 item border-top border-secondary">
+    <div class="form-group row mb-2">
+        <div class="col-12 col-md-2 py-md-2">
+            {{ form_label(vacation.reason) }}
+        </div>
+        <div class="px-1 col-12 col-md-6 col-lg-4">
+            {{ form_widget(vacation.reason) }}
+            <div class="px-2">{{ form_help(vacation.reason) }}</div>
+        </div>
+    </div>
+    <div class="d-none d-sm-flex row justify-content-end align-items-end">
+        <div class="col-sm-5 px-2">
+            {{ form_label(vacation.first.beginAt,null, {'label_attr': {'class': 'py-0'}}) }}
+        </div>
+        <div class="col-sm-5 px-2" >
+            {{ form_label(vacation.first.finishAt,null, {'label_attr': {'class': 'py-0'}}) }}
+        </div>
+    </div>
+    <div class="row align-items-start my-1">
+        <div class="col-12 col-sm-2 py-sm-2">Choix 1</div>
+        <div class="d-flex flex-column flex-sm-column-reverse col-12 col-sm-5 px-1 ">
+            {{ form_help(vacation.first.beginAt,  {'help_attr': {'class': 'px-2 '}}) }}
+            {{ form_widget(vacation.first.beginAt) }}
+        </div>
+        <div class="d-flex flex-column flex-sm-column-reverse col-12 col-sm-5 px-1 ">
+            {{ form_help(vacation.first.finishAt, {'help_attr': {'class': 'px-2 '}}) }}
+            {{ form_widget(vacation.first.finishAt) }}
+        </div>
+    </div>   
+    <div class="row align-items-start my-1">
+        <div class="col-12 col-sm-2 py-sm-2">
+            <p class="m-0">Choix 2</p>
+            <small>(facultatif)</small>
+        </div>
+        <div class="d-flex flex-column flex-sm-column-reverse col-12 col-sm-5 px-1 ">
+            {{ form_help(vacation.second.beginAt, {'help_attr': {'class': 'px-2 '}}) }}
+            {{ form_widget(vacation.second.beginAt) }}
+        </div>
+        <div class="d-flex flex-column flex-sm-column-reverse col-12 col-sm-5 px-1 ">
+            {{ form_help(vacation.second.finishAt, {'help_attr': {'class': 'px-2 '}}) }}
+            {{ form_widget(vacation.second.finishAt) }}
+        </div>
+    </div>
+</div>

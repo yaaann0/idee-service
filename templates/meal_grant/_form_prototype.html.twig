@@ -1,0 +1,31 @@
+<div class="row align-items-end border-top border-secondary my-2 item">
+    <div class="col-6 col-md-4 col-lg-2 px-1 my-2 align-items-end">
+        {{ form_label(mealgrant.createdAt) }}
+        {{ form_widget(mealgrant.createdAt) }}
+    </div>
+    <div class="col-6 col-md-8 col-lg-2 px-1 my-2 align-items-end">
+        {{ form_label(mealgrant.manager) }}
+        {{ form_widget(mealgrant.manager) }}
+    </div>
+    <div class="col-6 col-lg-2 px-1 my-2 align-items-end position-relative">
+        {{ form_label(mealgrant.client) }}
+        {{ form_widget(mealgrant.client) }}
+        <ul class="list-group position-absolute client_suggests"></ul>
+    </div>
+    <div class="col-6 col-lg-2 px-1 my-2 align-items-end">
+        {{ form_label(mealgrant.city) }}
+        {{ form_widget(mealgrant.city) }}
+    </div>
+    <div class="col-4 col-lg-2 px-1 my-2 align-items-end">
+        {{ form_label(mealgrant.distance) }}
+        {{ form_widget(mealgrant.distance) }}
+    </div>
+    <div class="col-4 col-lg-1 px-1 my-2 align-items-end">
+        {{ form_label(mealgrant.sector) }}
+        {{ form_widget(mealgrant.sector) }}
+    </div>
+    <div class="col-4 col-lg-1 px-1 my-2 align-items-end">
+        {{ form_label(mealgrant.mealNumber) }}
+        {{ form_widget(mealgrant.mealNumber) }}
+    </div>
+</div>   

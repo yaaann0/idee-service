@@ -1,0 +1,26 @@
+{{ form_start(form) }}
+    <div class="form-row">
+        <div class="col-12 col-md-6">
+            {{ form_row(form.lastname) }}
+        </div>
+        <div class="col-12 col-md-6">
+            {{ form_row(form.firstname) }}
+        </div>
+    </div>
+    {{ form_row(form.email) }}
+    <div class="form-row">
+        <div class="col-12 col-md-6">
+            {{ form_row(form.department) }}
+        </div>
+        {% if form.isActive is defined %}
+            <div class="col-12 col-md-6">
+                {{ form_row(form.isActive) }}
+            </div>
+        {% endif %}
+    </div>
+    {% if form.password is defined %}
+        {{ form_row(form.password) }}
+    {% endif %}
+    {{ form_errors(form) }}
+    <input class="btn btn-primary" type="submit" value="{{ submitText }}"/>
+{{ form_end(form) }} 

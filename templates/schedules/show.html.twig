@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=0.5">
+        <meta name="robots" content="noindex">      
+        <title>
+            Semaine {{ weeksheet.beginAt | format_date(pattern="w") }}
+            - {{ weeksheet.user.lastname | capitalize }} {{ weeksheet.user.firstname | first }}.
+        </title>
+        <link rel="shortcut icon" href="{{ asset('assets/logo_idee_22mars.jpg') }}" type="image/x-icon">
+        <link   rel="stylesheet" 
+                href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" 
+                integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" 
+                crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+              integrity="sha384-oS3vJWv+0UjzBfQzYUhdivYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay"
+              crossorigin="anonymous">
+        <link rel="stylesheet" href="{{ asset('assets/css/style.css?version=1') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/weeksheet.css?version=1') }}">
+    </head>
+    <body class="bg-light">
+        <div id="main-container" class="border bg-white px-4 pt-4">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-3">
+                        <img src="{{ asset('assets/logo_idee_22mars.jpg') }}" alt="logo idee services" id="logo" class="float-left mr-2">
+                        <h1 class="h2">FICHE DE <br>TRAVAIL</h1>
+                        <div class="mt-3 lead">
+                            <a href="{{ path('home') }}"><u>Liste</u></a>
+                            {% if weeksheet.state.slug == 'draft' or is_granted('ROLE_ADMIN') %}
+                                - <a href="{{ path('schedules_edit', {id: weeksheet.id}) }}"><u>Retour</u></a>
+                            {% endif %}
+                         </div>
+                    </div>
+                    <div class="col-3 lead">
+                        {{ weeksheet.user.lastname | upper }} {{ weeksheet.user.firstname | capitalize }} <br>
+                        {{ weeksheet.user.department.fullname }}
+                    </div>
+                    <div class="col-4 px-2">
+                        {% if weeksheet.adminComment %}
+                            <div class="alert alert-primary mb-0" style="line-height: 1rem;max-height:75px" role="alert">
+                                <p class="mb-0"><small>Administrateur :</small></p>
+                                <p class="px-2 mb-0"><small>{{ weeksheet.adminComment }}</small></p>
+                            </div>
+                        {% endif %}
+                        {% if weeksheet.comment %}
+                            <div class="alert alert-dark mb-0" style="line-height: 1rem;max-height:75px" role="alert">
+                                <p class="mb-0"><small>Commentaire :</small></p>
+                                <p class="px-2 mb-0"><small>{{ weeksheet.comment }}</small></p>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-2 text-center">
+                        <p class="lead m-2">Semaine</p>
+                        <p class="lead m-2">n° <strong class="h3">{{ weeksheet.beginAt | format_date(pattern="w") }}</strong></p>
+                        <p class="border border-dark p-2 h3 m-2">{{ weeksheet.beginAt | format_date(pattern="yyyy") }}</p>
+                    </div>                
+                </div>
+                <div class="row" id="header">
+                    <div class="col-1 text-danger pt-2">DATE</div>
+                    <div class="col-6"></div>
+                    <div class="col-5 text-center pt-2">HEURES</div>
+                </div>
+                {% for day in weeksheet.workDays %}
+                    <div class="row border day_line">
+                        <div class="col-1 d-flex justify-content-center align-items-center">
+                            {{ day.datetime | format_date(pattern="eeee d MMM") }}
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex mr-1 ml-1 position-relative">
+                                {% for i in 5..20 %}
+                                    <div class="flex-fill bg-transparent grid">
+                                        <small class="m-0 p-0">{{ i }}</small>
+                                        <div class="border border-dark border-top-0 flex-fill d-flex">
+                                            {% for index in 0..3 %}
+                                                <small class="border border-top-0 flex-fill text-white">.</small>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+
+                                {% set tasksList = [] %}
+                                {% for task in day.tasks %}
+                                    {% set beginAt = date(task.beginAt).diff(date("January 00, 1970 00:00")) %}
+                                    {% set begin = (beginAt.h + (beginAt.i / 60) - 5) / ( 21 - 5 ) * 100 %}
+                                    {% set interval = date(task.EndAt).diff(date(task.beginAt)) %}
+                                    {% set duration = interval.h + (interval.i / 60) %}
+                                    {% set width = duration / ( 21 - 5 ) * 100 %}
+                                    {% if loop.index is odd %}
+                                        {% set fillColor = {'svg': '#662738', 'text': '#953952'}  %}
+                                    {% else %}
+                                        {% set fillColor = {'svg': '#8ccc54', 'text': '#6fa243'} %}
+                                    {% endif %}
+                                    <div class="position-absolute task-elmt" style="left:{{begin}}%;width:{{width}}%;"> 
+                                        <svg width="100%" height="12px">
+                                            <rect width="100%" height="100%" x="0" y="0" fill="{{ fillColor['svg'] }}" />
+                                        </svg>
+                                        <p class="text-center my-0 bg-white" style="color: {{ fillColor['text'] }};">{{ loop.index }}</p>
+                                    </div>
+                                    {% set clientName = task.clientName|split(' - ') %}
+                                    {% set index = loop.index %}
+                                    {% set tasksList = tasksList|merge([{ 'index': loop.index, 'client': clientName[0], 'duration': duration, 'updated': task.isUpdated }]) %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-5 pl-1 text-center border-left d-flex align-items-stretch justify-content-center">
+                            <div class="col-10 px-0 d-flex align-content-start justify-content-begin">
+                                {% set haflList = 4 %}
+                                {% if tasksList|length > 8 %}
+                                    {% set haflList = (tasksList|length / 2)|round %}
+                                {% endif %}
+                                <div class="col-6 px-0">
+                                    {% for item in tasksList|slice(0, haflList) %}                                    
+                                        <div class="d-flex text-left border{% if item.updated %} text-danger{% endif %}">
+                                            <small class="col-8 pr-1 overflow-hidden text-nowrap">{{ item.index }} - {{ item.client }}</small>
+                                            <small class="col-4 pr-0">: {{ item.duration }}</small>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="col-6 px-0">
+                                    {% for item in tasksList|slice(haflList, tasksList|length) %}                                    
+                                        <div class="d-flex text-left border{% if item.updated %} text-danger{% endif %}">
+                                            <small class="col-8 pr-1 overflow-hidden text-nowrap">{{ item.index }} - {{ item.client }}</small>
+                                            <small class="col-4 pr-0">: {{ item.duration }}</small>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-2 text-center d-flex align-items-center justify-content-center">
+                                {{ durations[day.id] }}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="row">
+                    <div class="d-flex align-items-center justify-content-end col-11 p-2">
+                        {% if HTMLRender %}
+                            <div class="text-center flex-fill d-flex align-items-center justify-content-around">
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <a href="{{ path('schedules_edit', { 'id': weeksheet.id }) }}" role="button" class="btn btn-primary mr-3 ml-3">Modifier</a>
+                                    {% if weeksheet.state.slug != 'draft' %}
+                                        <a href="{{ path('schedules_download', { 'id': weeksheet.id }) }}" target="_blank" role="button" class="btn btn-danger font-weight-bold mr-3 ml-3">
+                                            PDF
+                                        </a>
+                                    {% endif %}
+                                {% endif %}
+                                {% if form is defined and weeksheet.state.slug == 'draft' or (weeksheet.state.slug != 'signed' and is_granted('ROLE_ADMIN')) %}
+                                    {{ form_start(form) }}
+                                        {{ form_widget(form.validate) }}
+                                    {{ form_end(form) }}
+                                {% endif %}
+                                {% if weeksheet.state.slug == 'validated' %}
+                                    <p class="mr-3 ml-3 mb-0 font-italic">Cette feuille a été validée</p>
+                                {% elseif weeksheet.state.slug == 'signed' %}
+                                    <p class="mr-3 ml-3 mb-0 font-italic">Cette feuille a été signée le {{ weeksheet.signedAt | format_date(pattern="dd/MM/YYYY") }}</p>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            <p class="flex-fill font-italic">
+                                Le {{ date() | format_datetime('full', 'full', locale='fr') }}    
+                            </p>
+                        {% endif %}
+                        <p class="mb-0">Total =</p>
+                    </div>
+                    <div class="col-1 text-center border p-2"><strong>{{ durations['week'] }}</strong></div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

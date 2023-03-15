@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <meta name="robots" content="noindex">
+        
+        <title>{% block title %}Bienvenu{% endblock %} | Idée Services Auvergne</title>
+
+        <link rel="shortcut icon" href="{{ asset('assets/logo_idee_22mars.jpg') }}" type="image/x-icon">
+
+        {# Bootstrap v4.5.3 #}
+        <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+              integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay"
+              crossorigin="anonymous">
+
+        <link rel="stylesheet" href="{{ asset('assets/css/style.css?version=1') }}">
+        
+        {% block stylesheets %}{% endblock %}
+
+    </head>
+    <body class="bg-light">
+        {% include "default/header.html.twig" %}
+        {% block body %}{% endblock %}
+
+        {# Bootstrap v4.5.3 #}
+        <script src="{{ asset('assets/js/jquery-3.5.1.slim.min.js?version=1') }}"
+                type="application/javascript">
+        </script>
+        {# Bootstrap v4.5.3 #}
+        <script src="{{ asset('assets/js/bootstrap.bundle.min.js?version=1') }}"
+                type="application/javascript">
+        </script>
+
+        <script src="{{ asset('assets/js/ajax.js?version=1') }}"
+                type="application/javascript">
+        </script>
+
+        <script src="{{ asset('assets/js/main.js?version=1') }}"
+                type="application/javascript">
+        </script>
+        
+        {% block javascripts %}{% endblock %}
+        
+    </body>
+</html>

@@ -1,0 +1,43 @@
+<h1 class="h4">
+    Horaires d'intervention de {{ user.firstname }} {{ user.lastname | upper }} 
+</h1>
+<p>Catégorie : <strong>{{ user.department.fullname }}</strong></p>
+<div class="row align-items-center mb-2 flex-wrap">
+    <h2 class="h5 mb-2 col-12 col-md-auto">
+        Pour la semaine du {{ weeksheet.beginAt | format_date(pattern="d MMM") }}
+        au {{ weeksheet.finishAt | format_date(pattern="d MMM Y") }} :
+    </h2>
+    {% if recentWeeksheets > 1 %}
+        <div class="dropdown mb-1 col-auto">
+            <a class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" id="copy_schedule" href="#" role="button" aria-expanded="false" aria-haspopup="true">
+                Importer une feuille existante
+            </a>
+            <div class="dropdown-menu" aria-labelledby="copy_schedule">
+                {% for week in recentWeeksheets %}
+                    {% if week.id != weeksheet.id %}
+                        <a class="dropdown-item" href="{{ path('schedules_copy', { 'origin': week.id, 'target': weeksheet.id }) }}">
+                            n°{{ week.beginAt | format_date(pattern="w") }} - {{ week.beginAt | format_date(pattern="eee d") }} au {{ week.finishAt | format_date(pattern="eee d MMM YYYY") }}
+                        </a> 
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+<a href="{{ path('home') }}" class="lead"><u>Retour</u></a>   
+{% for message in app.flashes('notice') %}
+    <div class="alert alert-success m-3" role="alert">
+        {{ message }}
+    </div>
+{% endfor %}
+{% for message in app.flashes('errors') %}
+    <div class="alert alert-danger m-3" role="alert">
+        {{ message }}
+    </div>
+{% endfor %}
+{% if weeksheet.adminComment %}
+    <div class="alert alert-primary m-3 font-weight-bold" role="alert">
+        <p class="mb-0">Commentaire de l'administrateur :</p>
+        <p class="px-2">{{ weeksheet.adminComment }}</p>
+    </div>
+{% endif %}

@@ -1,0 +1,45 @@
+@page {
+    size: auto;
+    margin: 0;
+}
+
+#main-container {
+    width: 29.7cm;
+    height: 20.5cm;
+}
+
+#logo{
+    height: 75px;
+}
+
+#header{
+    background-color: #d0cece !important;
+    height: 42px;
+}
+
+.day_line {
+    min-height: 75px;
+}
+
+.grid {
+   z-index: 2;
+}
+
+.grid div {
+    height: 12px;
+}
+
+svg{
+    bottom: 0;
+    z-index: 1;
+}
+
+.task-elmt {
+    top: 17px;
+    z-index: 1;
+}
+
+.task-elmt p {
+    font-weight: bold;
+    line-height: 20px;
+}

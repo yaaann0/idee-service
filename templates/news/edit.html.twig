@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier actualité{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="h3">Modifier une actualité :</h1>
+        <p class="">
+            <a href="{{ path('news_show', {'id': news.id}) }}">Retour</a>
+        </p>
+        <hr>
+        <div class="row">
+            <div class="col-12 col-md-8 offset-md-2 col-xl-6 offset-xl-3">
+                {% include "news/_form.html.twig" %}       
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+
+    <script src="{{ asset('assets/js/newsForm.js?version=1') }}"
+            type="application/javascript">
+    </script>
+{% endblock %}

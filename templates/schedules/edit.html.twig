@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Semaine {{ weeksheet.beginAt | format_date(pattern="w") }}
+     - {{ user.lastname | capitalize }} {{ user.firstname | first }}.
+{% endblock %}
+
+{% block body %}
+    <div class="container-xl">
+        {% include "schedules/_header.html.twig" %}
+        {{ form_start(form) }}
+            {{ form_errors(form) }}
+            {% for day in form.workDays %}
+                <div class="rounded bg-lightgray pt-2 pb-2 pr-3 pl-3 lead">{{ day.vars.value.dateTime | format_date(pattern="eeee d MMM") }}</div>
+                <div class="align-items-center d-none d-md-flex mt-1">
+                    <div class="col-auto"></div>
+                    <div class="col-10 col-md-3 pr-2 pl-2">Lieu d'intervention :</div>
+                    <div class="col-6 col-md-3 pl-5 pr-2 pl-2">Début à :</div>
+                    <div class="col-6 col-md-3 pl-5 pr-2 pl-2">Fin à :</div>
+                </div> 
+                {% set dayIndex = loop.index - 1 %}
+                <div id="tasks_{{ dayIndex }}" 
+                    class="tasks" 
+                    data-prototype="{{ include('schedules/_form_task_prototype.html.twig', { 'task': day.tasks.vars.prototype }) |e('html_attr') }}"> 
+                    {% for task in day.tasks %}
+                        {{ include('schedules/_form_task_prototype.html.twig', { 'taskIndex': loop.index0 }) }}
+                    {% endfor %}
+                </div>
+                <div class="row m-1 p-2 border-top align-items-center justify-content-end">
+                    <div class="col-6 text-right">
+                        Total jour = <span id="duration_workDays_{{ dayIndex }}" class="ml-4">0.0</span> h
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="row justify-content-end">
+                <div class="border-top border-dark col-12 col-md-6 col-lg-4 lead p-3 text-right">
+                    Total hebdo = 
+                    <span class="ml-4 rounded-lg border pr-3 pl-3 pt-1 pb-1 bg-white">
+                        <span id="duration_week">0.0</span> h
+                    </span>
+                </div>
+            </div>
+            <div class="row justify-content-end">
+                {% if is_granted('ROLE_ADMIN') %}
+                    <div class="col-12 col-md-6 text-md-right font-weight-bold px-md-4">
+                        {{ form_label(form.admin_comment) }}
+                    </div>
+                    <div class="col-12 col-md-6">
+                        {{ form_widget(form.admin_comment) }}
+                        {{ form_help(form.admin_comment) }}
+                    </div>
+                {% else %}
+                    <div class="col-12 col-md-6 font-weight-bold">
+                        {{ form_row(form.comment) }}
+                    </div>
+                {% endif %}
+            </div>
+
+            {{ form_errors(form) }}
+            <div class="row justify-content-end mt-4 mb-5">
+                <div class="col-12 m-3" id="jquery_form_errors" role="alert"></div>
+                {% if weeksheet.state.slug != 'signed' %}
+                <div class="col-6 col-md-3 row justify-content-end">
+                    {{ form_widget(form.validate) }}
+                </div>
+                {% endif %}
+                {% if weeksheet.state.slug != 'draft' %}
+                    <div class="col-6 col-md-3 text-center">
+                        {{ form_widget(form.unvalidate) }}
+                    </div>
+                {% endif %}
+                <div class="col-6 col-md-3 text-center">
+                    {% if weeksheet.state.slug == 'draft' %} 
+                        {% set label = 'Enregistrer en brouillon' %}
+                    {% else %}
+                        {% set label = 'Enregistrer' %}
+                    {% endif  %}
+                    {{ form_widget(form.save, {'label': label}) }}
+                </div>
+                <div class="col-12 text-center m-3">
+                    <a href="{{ path('home') }}" class="lead"><u>Retour</u></a>
+                </div>
+            </div>
+            {{ form_widget(form._token) }}
+        {{ form_end(form, {render_rest: false}) }}
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+    <script src="{{ asset('assets/js/clientAutocomplete.js?version=1') }}"
+            type="application/javascript">
+    </script>
+
+    <script src="{{ asset('assets/js/scheduleCounter.js?version=1') }}"
+            type="application/javascript">
+    </script>
+
+    <script src="{{ asset('assets/js/schedules.js?version=1') }}"
+            type="application/javascript">
+    </script>
+
+{% endblock %}

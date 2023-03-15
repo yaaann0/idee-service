@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier client{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="h3">Modifications client :</h1>
+        <hr>
+        <div class="row">
+            <div class="col-12 col-md-8 offset-md-2 col-xl-6 offset-xl-3">
+                {% include "clients/_form.html.twig" %}       
+            </div>
+        </div>
+    </div>
+{% endblock %}

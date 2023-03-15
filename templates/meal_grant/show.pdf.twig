@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	</head>
+	<body style="width:29.7cm; height:21cm; margin:1cm; {# font-size:0.9rem; #} line-height: 1.5;box-sizing: border-box;">
+		<table style="border: none; width:28cm;">
+			<tbody>
+				<tr>
+					<td style="width: 100px;">
+						<img src="{{ asset('assets/logo_idee_22mars.jpg') }}" alt="logo idee services" style="float: left;height:75px;margin-bottom: 5px;margin-right: 5px;">
+					</td>
+					<td>
+						<h1 style="margin-bottom: 5px;font-weight: 500;line-height: 1.2;font-size: 2rem;">INDEMNITES REPAS</h1>
+					</td>
+					<td style="text-align: center;">
+						<p style="font-size: 1.25rem;font-weight: 300;margin: 5px;">Mois de {{ sheet.month }} {{ sheet.year }}</p>
+					</td>	
+				</tr>
+			</tbody>
+		</table>
+		<p style="font-size: 1.25rem;font-weight: 300;box-sizing: border-box;">
+			{{ user.lastname | upper }} {{ user.firstname | capitalize }} -	{{ user.department.fullname }}
+		</p>
+		<table style="border-collapse: collapse;width:28cm;">
+			<thead>
+				<tr style="height: 30px;border: 1px solid black;">
+					<th rowspan="2" style="border: 1px solid lightgray;padding-right: 15px;padding-left: 15px;">Date</th>
+					<th colspan="4" style="border: 1px solid lightgray;padding-right: 15px;padding-left: 15px;">REFERENCES CHANTIER</th>
+					<th colspan="{{ sectors | length }}" style="border: 1px solid lightgray;padding-right: 15px;padding-left: 15px;">SECTEUR</th>
+					<th style="border: 1px solid lightgray;padding-right: 15px;padding-left: 15px;">NB de repas</th>
+					<th rowspan="2" style="border: 1px solid lightgray;padding-right: 15px;padding-left: 15px;">TOTAL</th>
+				</tr>
+				<tr style="height: 30px;border: 1px solid black;">
+					<th style="border: 1px solid lightgray;padding-right: 15px;padding-left: 15px;">Responsable du chantier</th>
+					<th style="border: 1px solid lightgray;padding-right: 15px;padding-left: 15px;">Nom du chantier</th>
+					<th style="border: 1px solid lightgray;padding-right: 15px;padding-left: 15px;">Commune du chantier</th>
+					<th style="border: 1px solid lightgray;padding-right: 15px;padding-left: 15px;">Distance du siège</th>
+					{% for sector in sectors %}
+						<th style="border: 1px solid lightgray;padding-right: 15px;padding-left: 15px;">{{ sector.shortname }}</th>
+					{% endfor %}
+					<th style="border: 1px solid lightgray;padding-right: 15px;padding-left: 15px;text-align: center;">{{ cost | format_currency('EUR', locale='fr') }}</th>
+				</tr>
+			</thead>	
+			<tbody>
+				{% set total = 0 %}
+				{% for meal in sheet.mealgrants %}
+					<tr style="height: 30px;box-sizing: border-box;border: 1px solid black;">
+						<td style="border: 1px solid lightgray;height: 30px;padding-right: 15px;padding-left: 15px;box-sizing: border-box;">
+							{{ meal.createdAt | format_date(pattern=" d/MM/YYYY") }}
+						</td>
+						<td style="border: 1px solid lightgray;height: 30px;padding-right: 15px;padding-left: 15px;box-sizing: border-box;">
+							{{ meal.manager | slice(0, 20) }}
+						</td>
+						<td style="border: 1px solid lightgray;height: 30px;padding-right: 15px;padding-left: 15px;box-sizing: border-box;">
+							{% set clientName = meal.client|split(' - ') %}
+							{{ clientName[0] | slice(0, 20) }}
+						</td>
+						<td style="border: 1px solid lightgray;height: 30px;padding-right: 15px;padding-left: 15px;box-sizing: border-box;">
+							{{ meal.city | slice(0, 20) }}
+						</td>
+						<td style="border: 1px solid lightgray;height: 30px;padding-right: 15px;padding-left: 15px;box-sizing: border-box;">
+							{% if meal.distance is not null %}
+								{{ meal.distance }} km
+							{% endif %}
+						</td>
+						{% for sector in sectors %}
+							{% if sector.shortname == meal.sector.shortname %}
+								<td style="border: 1px solid lightgray;height: 30px;padding-right: 15px;padding-left: 15px;box-sizing: border-box;text-align: center;">
+									X
+								</td>
+							{% else %}
+								<td style="color: white;border: 1px solid lightgray;height: 30px;padding-right: 15px;padding-left: 15px;box-sizing: border-box;">
+									-
+								</td>
+							{% endif %}
+						{% endfor %}	
+						<td style="border: 1px solid lightgray;height: 30px;padding-right: 15px;padding-left: 15px;box-sizing: border-box;text-align: center;">
+							{{ meal.mealNumber }}
+						</td>
+						<td style="border: 1px solid lightgray;height: 30px;padding-right: 15px;padding-left: 15px;box-sizing: border-box;text-align: center;">
+							{% set sum = (meal.mealNumber * cost) %}
+							{{ sum | format_currency('EUR', locale='fr') }}
+							{% set total = total + sum %}
+						</td>						
+					</tr>
+				{% endfor %}
+				<tr>
+					<td colspan="{{ sectors | length + 6 }}" style="text-align:right;height: 30px;padding-right: 15px;padding-left: 15px;box-sizing: border-box;">
+						Total =
+					</td>
+					<td style="border: 1px solid black;height: 30px;padding-right: 15px;padding-left: 15px;box-sizing: border-box;text-align: center;">
+						<strong>{{ total | format_currency('EUR', locale='fr') }}</strong>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>Le {{ date() | format_datetime(pattern="eeee d MMMM y - HH:mm") }}</p>
+	</body>
+</html>

@@ -1,0 +1,24 @@
+{% extends 'emails/base.html.twig' %}
+
+{% block title %}Nouveau compte utilisateur{% endblock %}
+
+{% block body %}
+    
+    <div id="main" class="">
+        <p>
+            Bonjour,<br>
+            Voici les informations du nouveau compte utilisateur :</p>
+
+        <p>
+            NOM Prénom : {{ user.lastname | upper }} {{ user.firstname | capitalize }} <br>
+            Catégorie :  {{ user.department.fullname }}
+        </p>
+
+        <p>
+            <u>Informations de connexion :</u><br>
+            E-mail : <strong>{{ user.email }}</strong><br>
+            Mot de passe : <strong>{{ user.password }}</strong>
+        </p>
+    </div>
+
+{% endblock %}

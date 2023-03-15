@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ client.fullName }}
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row flex-column-reverse flex-md-row">
+            <div class="col-12 col-md-8">
+                <p class="">
+                    <a href="{{ path('clients') }}">Retour</a>
+                </p>
+                <h1 class="h4">
+                    Détail du client : 
+                    {% if client.archivedAt is not null %}
+                        <span class="badge badge-secondary">Archivé</span>
+                    {% endif %}
+                </h1>
+                <hr>
+                <table class="table bg-white">
+                    <tbody>
+                        <tr>
+                            <th scope="row">Nom :</th>
+                            <td>{{ client.fullName }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Adresse :</th>
+                            <td>                   
+                                {{ client.adress }}
+                                <br>
+                                {{ client.postalCode }} {{ client.City }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Date de création :</th>
+                            <td>{{ client.createdAt | format_datetime('short', 'short', locale='fr') }}</td>
+                        </tr>
+                        {% if client.archivedAt is not null %}
+                            <tr>
+                                <th scope="row">Nom :</th>
+                                <td>{{ client.archivedAt | format_datetime('short', 'short', locale='fr') }}</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+                {% for message in app.flashes('notice') %}
+                    <div class="alert alert-info" role="alert">
+                        {{ message }}
+                    </div>                
+                {% endfor %}
+            </div>
+            <div class="col-12 col-md-4">
+                <p>
+                    <span class="d-none d-md-block">Actions :</span>
+                    <button class="btn btn-secondary btn-sm btn-block d-md-none" type="button" data-toggle="collapse" data-target="#menu-collapse" aria-expanded="false" aria-controls="menu-collapse">
+                        Menu
+                    </button>
+                </p>
+                <div class="list-group d-md-none collapse" id="menu-collapse">
+                    {% include "clients/_show_menu.html.twig" %}
+                </div>
+                <div class="list-group d-none d-md-block">
+                    {% include "clients/_show_menu.html.twig" %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}
